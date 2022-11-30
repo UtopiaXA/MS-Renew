@@ -1,0 +1,34 @@
+#更新api排序
+name: Update Rand Api
+
+on:
+  schedule:
+    - cron: "0 0 7 * *"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Set up Python #安装python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install requests #安装requests
+        run: |
+          pip install requests
+      - name: Update Rand Api #更新api排序
+        run: |
+          python UpdateRand.py
+      - name: Commit #上传新的排序到仓库
+        run: |
+          git config --global user.email AutoupdateRobot@email.com
+          git config --global user.name AutoupdateRobot
+          git add .
+          git commit -m "Update New Rand Api" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
