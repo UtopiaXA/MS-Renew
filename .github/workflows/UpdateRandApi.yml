@@ -2,6 +2,7 @@
 name: Update Rand Api
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: "0 0 7 * *"
 
@@ -11,11 +12,11 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v4
       - name: Set up Python #安装python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.8
+          python-version: '3.10'
       - name: Install requests #安装requests
         run: |
           pip install requests

@@ -50,7 +50,16 @@ def gettoken(refresh_token):
             'client_secret': secret_list[a],
             'redirect_uri': 'http://localhost:53682/'}
     html = req.post('https://login.microsoftonline.com/common/oauth2/v2.0/token', data=data, headers=headers)
-    jsontxt = json.loads(html.text)
+    try:
+        jsontxt = json.loads(html.text)
+    except Exception as e:
+        print(f"[ERROR] 账号 {a} 解析微软响应 JSON 失败！HTTP 状态码: {html.status_code}")
+        print(f"[ERROR] 原始返回内容:\n{html.text}")
+        sys.exit(1)
+    if 'refresh_token' not in jsontxt:
+        print(f"[ERROR] 账号 {a} 获取初始 Token 失败！HTTP 状态码: {html.status_code}")
+        print(f"[ERROR] 微软接口返回详细信息:\n{json.dumps(jsontxt, indent=2, ensure_ascii=False)}")
+        sys.exit(1)
     refresh_token = jsontxt['refresh_token']
     access_token = jsontxt['access_token']
     with open(path, 'w+') as f:
